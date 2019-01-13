@@ -15,7 +15,7 @@
     "css-loader": "^0.28.7"
   },
   "scripts": {
-    "start": "PORT=3006 BROWSER=none react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
