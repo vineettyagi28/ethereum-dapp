@@ -12,7 +12,8 @@ class App extends Component {
 
     state = {
         message1 : '',
-        isMetaMask: false
+        isMetaMask: false,
+        phaseName: ''
     };
 
     async componentDidMount() {
@@ -39,19 +40,19 @@ class App extends Component {
 
         const accounts = await web3.eth.getAccounts();
 
-        //this.setState({message1: 'Waiting on transaction success..'});
+        this.setState({message1: 'Waiting on transaction success..'});
         try {
-            // await icoManagerContract.methods.addICOPhase(phaseName, startPrice, reservePrice,
-            //     minimumBidInWei, claimPeriod, walletAddress, intervalDuration, offerings).send(
-            //     {
-            //         from: accounts[0],
-            //         gas: '1000000'
-            //     }
-            // );
+            await contract.methods.participate().send(
+                {
+                    from: accounts[0],
+                    gas: '1000000',
+                    value: web3.utils.toWei(this.state.phaseName)
+                }
+            );
 
-            //this.setState({message1: 'New ICO phase has been successfully started'});
+            this.setState({message1: 'Successs'});
         } catch (err) {
-            this.setState({message1: 'Error in adding new ICO phase'});
+            this.setState({message1: 'Error in participating'});
         }
         this.setState({
             //clear state
@@ -59,20 +60,82 @@ class App extends Component {
 
     };
 
-    getAuctionAddress = async (event) => {
+    makeLuckyDraw = async (event) => {
         event.preventDefault();
 
-        //this.setState({message1: 'Getting current auction address...'});
+        const accounts = await web3.eth.getAccounts();
 
-        let currentAuctionAddress = '0x';
+        this.setState({message1: 'Waiting on result declaration..'});
+        try {
+            await contract.methods.declare_winner().send(
+                {
+                    from: accounts[0],
+                    gas: '1000000'
+                }
+            );
+
+            this.setState({message1: 'Successs'});
+        } catch (err) {
+            this.setState({message1: 'Error in result'});
+        }
+        this.setState({
+            //clear state
+        });
+
+    };
+
+    getOwnerAddress = async (event) => {
+        event.preventDefault();
+
+        this.setState({message1: 'Getting current auction address...'});
+
+        let currentOwnerAddress = '0x';
 
         try {
-            //currentAuctionAddress = await icoManagerContract.methods.currentAuction().call();
+            currentOwnerAddress = await contract.methods.manager().call();
         } catch (err) {
             console.log(err);
         }
 
-        //this.setState({message1: 'Current auction address fetched successfully : ' + currentAuctionAddress});
+        this.setState({message1: 'Current owner address fetched successfully : ' + currentOwnerAddress});
+    };
+
+    getWinnerAddress = async (event) => {
+        event.preventDefault();
+
+        this.setState({message1: 'Getting current winner address...'});
+
+        let currentOwnerAddress = '0x';
+
+        try {
+            currentOwnerAddress = await contract.methods.winner().call();
+        } catch (err) {
+            console.log(err);
+        }
+
+        this.setState({message1: 'Current winner address fetched successfully : ' + currentOwnerAddress});
+    };
+
+    withdrawAmount = async (event) => {
+        event.preventDefault();
+
+        const accounts = await web3.eth.getAccounts();
+
+        this.setState({message1: 'Waiting for confirmation..'});
+        try {
+            await contract.methods.withdrawFunds().send(
+                {
+                    from: accounts[0],
+                    gas: '1000000'
+                }
+            );
+            this.setState({message1: 'Successs'});
+        } catch (err) {
+            this.setState({message1: 'Error in result'});
+        }
+        this.setState({
+            //clear state
+        });
     };
 
     render() {
@@ -94,6 +157,7 @@ class App extends Component {
                                     value={this.state.phaseName}
                                     onChange={event => this.setState({phaseName: event.target.value})}/>
                                 </FormGroup>
+                                <br/><br/>
                             <FormGroup>
                                 <Button bsSize="large" bsStyle="warning" type="submit">
                                     Send Method
@@ -104,7 +168,36 @@ class App extends Component {
                         <br/>
                         <hr width="100"/>
 
-                        <Button bsSize="large" bsStyle="info" onClick={this.getAuctionAddress}>Call Method</Button>
+                        <Button bsSize="large" bsStyle="info" onClick={this.getOwnerAddress}>Get Owner Address Method</Button>
+
+                        <br/><br/>
+
+                        <hr width="100"/>
+
+                        <br/>
+                        <hr width="100"/>
+
+                        <Button bsSize="large" bsStyle="info" onClick={this.getWinnerAddress}>Check Winner</Button>
+
+                        <br/><br/>
+
+                        <hr width="100"/>
+
+                        <hr width="100"/>
+
+                        <br/>
+                        <hr width="100"/>
+
+                        <Button bsSize="large" bsStyle="info" onClick={this.makeLuckyDraw}>Declare Lucky Draw</Button>
+
+                        <br/><br/>
+
+                        <hr width="100"/>
+
+                        <br/>
+                        <hr width="100"/>
+
+                        <Button bsSize="large" bsStyle="warning" onClick={this.withdrawAmount}>Claim Money</Button>
 
                         <br/><br/>
 
