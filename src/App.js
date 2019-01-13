@@ -12,7 +12,8 @@ class App extends Component {
 
     state = {
         message1 : '',
-        isMetaMask: false
+        isMetaMask: false,
+        value: 0
     };
 
     async componentDidMount() {
@@ -74,6 +75,26 @@ class App extends Component {
         //this.setState({message1: 'Current auction address fetched successfully : ' + currentAuctionAddress});
     };
 
+    async submitParticipate(event){
+        event.preventDefault();
+
+        const value = "0.005";
+
+        const accounts = await web3.eth.getAccounts();
+
+        try {
+            const response = await contract.methods.participate().send({
+                "from": accounts[0],
+                "value": web3.utils.toWei(value)
+            });
+
+            console.log(response);
+        }catch(err){
+            console.log(err);
+        }
+
+    }
+
     render() {
 
         if (this.state.isMetaMask) {
@@ -84,18 +105,18 @@ class App extends Component {
 
                         <h2 className="display-1 text-muted">{this.state.message1}</h2>
 
-                        <Form inline onSubmit={this.addICOPhase}>
+                        <Form inline onSubmit={this.submitParticipate}>
                             <FormGroup>
                                 <FormControl
                                     type="text"
-                                    name="phaseName"
-                                    placeholder="enter"
-                                    value={this.state.phaseName}
-                                    onChange={event => this.setState({phaseName: event.target.value})}/>
+                                    name="value"
+                                    placeholder="enter the value"
+                                    value={this.state.value}
+                                    onChange={event => this.setState({value: event.target.value})}/>
                                 </FormGroup>
                             <FormGroup>
                                 <Button bsSize="large" bsStyle="warning" type="submit">
-                                    Send Method
+                                    Participate
                                 </Button>
                             </FormGroup>
                         </Form>
