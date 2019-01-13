@@ -59,15 +59,14 @@ class App extends Component {
 
     };
 
-    getAuctionAddress = async (event) => {
+    getOwnerAddress = async (event) => {
         event.preventDefault();
 
-        //this.setState({message1: 'Getting current auction address...'});
-
-        let currentAuctionAddress = '0x';
+        let ownerAddress = '0x';
 
         try {
-            //currentAuctionAddress = await icoManagerContract.methods.currentAuction().call();
+            ownerAddress = await contract.methods.owner().call();
+            alert(ownerAddress);
         } catch (err) {
             console.log(err);
         }
@@ -104,7 +103,7 @@ class App extends Component {
                         <br/>
                         <hr width="100"/>
 
-                        <Button bsSize="large" bsStyle="info" onClick={this.getAuctionAddress}>Call Method</Button>
+                        <Button bsSize="large" bsStyle="info" onClick={this.getOwnerAddress}>Get Owner Address</Button>
 
                         <br/><br/>
 
