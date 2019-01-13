@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/lib/Button';
 import FormGroup from 'react-bootstrap/lib/FormGroup';
 import Form from 'react-bootstrap/lib/Form';
 import FormControl from 'react-bootstrap/lib/FormControl';
+import {abi, address} from './contract';
 
 let contract;
 class App extends Component {
@@ -29,7 +30,7 @@ class App extends Component {
         }
 
         if (this.state.isMetaMask) {
-            //contract = new web3.eth.Contract("Contract.abi", "Contract.address");
+            contract = new web3.eth.Contract(abi, address);
         }
     }
 
@@ -89,13 +90,13 @@ class App extends Component {
                                 <FormControl
                                     type="text"
                                     name="phaseName"
-                                    placeholder="enter phase name"
+                                    placeholder="enter"
                                     value={this.state.phaseName}
                                     onChange={event => this.setState({phaseName: event.target.value})}/>
                                 </FormGroup>
                             <FormGroup>
                                 <Button bsSize="large" bsStyle="warning" type="submit">
-                                    Add ICO Phase
+                                    Send Method
                                 </Button>
                             </FormGroup>
                         </Form>
@@ -103,8 +104,7 @@ class App extends Component {
                         <br/>
                         <hr width="100"/>
 
-                        <Button bsSize="large" bsStyle="info" onClick={this.getAuctionAddress}>Get Current Auction
-                            Address</Button>
+                        <Button bsSize="large" bsStyle="info" onClick={this.getAuctionAddress}>Call Method</Button>
 
                         <br/><br/>
 
